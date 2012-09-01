@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Rockhoist Ratings
-Version: 1.1.2
-Plugin URI: http://www.twitter.com/blairyeah
+Version: 1.2
+Plugin URI: http://twitter.com/blairyeah
 Description: A YouTube style rating widget for posts. 
 Author: B. Jordan
 Author URI: http://www.twitter.com/blairyeah
@@ -38,11 +38,13 @@ global $rhr_db_version;
 $rhr_db_version = "1.0";
 
 // Install the plugin.
-function rhr_installation() {
+function rhr_activate() {
+
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 	global $wpdb;
 
-	// Create the rh_ratings.
+	// Create the rh_ratings table.
 
 	$table_name = $wpdb->prefix . "rh_ratings";
 	
@@ -56,7 +58,6 @@ function rhr_installation() {
                         CONSTRAINT rhr_uk UNIQUE KEY (user_id, post_id)
 		);";
 
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( $sql );
 	}
  
@@ -64,7 +65,25 @@ function rhr_installation() {
 }
 
 // Hook for registering the install function upon plugin activation.
-register_activation_hook(__FILE__,'rhr_installation');
+register_activation_hook(__FILE__,'rhr_activate');
+
+// Install the plugin.
+function rhr_deactivate() {
+
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+	global $wpdb;
+
+	// Drop the rh_ratings table.
+	$table_name = $wpdb->prefix . "rh_ratings";
+	$sql = "DROP TABLE IF EXISTS " . $table_name . ";";
+	dbDelta( $sql );
+
+	delete_option('rhr_db_version');
+}
+
+// Hook for registering the uninstall function upon plugin deactivation.
+register_deactivation_hook( __FILE__, 'rhr_deactivate' );
 
 function rhr_set_rating( $args = '' ) { 
 
@@ -139,7 +158,7 @@ function rhb_count_ratings( $filter = '' ) {
 	return $rating_count;
 }
 
-function rhr_the_rating() {
+function rhr_the_rating( $content ) {
 
 	global $post;
 
@@ -161,12 +180,18 @@ function rhr_the_rating() {
 		$upClass   = ( $userRatingCountUp   == 1 ) ? 'rating-up-active' : 'rating-up-inactive';
 		$downClass = ( $userRatingCountDown == 1 ) ? 'rating-down-active' : 'rating-down-inactive';
 
-		?>
-		<div class="rating-widget">
-			<a id="rate-up-<?php echo $post->ID; ?>" class="rating-icon <?php echo $upClass; ?>"></a>
-			<a id="rate-down-<?php echo $post->ID; ?>" class="rating-icon <?php echo $downClass; ?>"></a>
-		</div> <!-- /rating-widget -->
-		<?php
+		$content = sprintf('%s
+			<div class="rating-widget">
+				<a id="rate-up-%s" class="rating-icon %s"></a>
+				<a id="rate-down-%s" class="rating-icon %s"></a>
+			</div> <!-- /rating-widget -->',
+			$content,
+			$post->ID,
+			$upClass,
+			$post->ID,
+			$downClass
+		);
+
 	}
 
 	// count the total ratings
@@ -174,14 +199,24 @@ function rhr_the_rating() {
 		'rating' => 'up' ) );
 	$ratingCountDown = rhb_count_ratings( array( 'post_ID' => $post->ID,
 		'rating' => 'down' ) );
-	?>
-	
-	<div class="rating-count">
-		Up votes: <span id="rating-count-up-<?php echo $post->ID; ?>" class="rating-count-up"><?php echo $ratingCountUp; ?></span>
-		Down votes: <span id="rating-count-down-<?php echo $post->ID; ?>" class="rating-count-down"><?php echo $ratingCountDown; ?></span>
-	</div>
-	<?php
+
+
+	$content = sprintf('%s
+		<div class="rating-count">
+		Up votes: <span id="rating-count-up-%s" class="rating-count-up">%s</span>
+		Down votes: <span id="rating-count-down-%s" class="rating-count-down">%s</span>
+		</div>',
+		$content,
+		$post->ID,
+		$ratingCountUp,
+		$post->ID,
+		$ratingCountDown
+	);
+
+	return $content;
 }
+
+add_filter('the_content', 'rhr_the_rating');
 
 // Link to Rockhoist Ratings stylesheet and apply some custom styles
 function rhr_css() {

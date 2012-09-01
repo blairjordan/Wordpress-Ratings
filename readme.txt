@@ -1,9 +1,9 @@
 === Rockhoist Ratings ===
 Contributors: esserq
 Tags: rating, thumbs, up, down, post, ajax
-Requires at least: 3.1
-Tested up to: 3.1.1
-Stable tag: 1.1.2
+Requires at least: 3.4
+Tested up to: 3.4.1
+Stable tag: 1.2
 
 Rockhoist Ratings is a thumbs up/ thumbs down style rating widget for posts.
 
@@ -24,15 +24,15 @@ Contact me if you find any bugs, issues or have a feature request and I will do 
 
 1. Unpack `rh-ratings.zip` to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Put the following code in your loop:
-
-`rhr_the_rating();`
 
 == Screenshots ==
 
 1. The rating widget with default styling.
 
 == Changelog ==
+
+= 1.2 =
+* Fixed compatibility issue with content filter.
 
 = 1.1.2 =
 * Changed jQuery registration to use Google API.
