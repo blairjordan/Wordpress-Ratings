@@ -1,0 +1,38 @@
+/* Ratings */
+
+.rating-widget {
+	height:54px;
+	width:42px;
+	padding:3px;
+}
+
+.rating-icon {
+	height:27px;
+	width:42px;
+	display:inline-block;
+	background-image:url("sprites.png?v=1");
+	background-repeat:no-repeat;
+	overflow:hidden;
+}
+
+.rating-up-inactive:hover, .rating-down-inactive:hover {
+	cursor: pointer;
+}
+
+/* Sprites */
+
+.rating-up-inactive {
+	background-position:0 -36px;
+}
+
+.rating-down-inactive{
+	background-position:0 -73px;
+}
+
+.rating-up-active, .rating-up-inactive:hover{
+	background-position:0 -1px;
+}
+
+.rating-down-active, .rating-down-inactive:hover{
+	background-position:0 -103px;
+}
