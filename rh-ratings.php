@@ -153,7 +153,7 @@ function rhb_count_ratings( $filter = '' ) {
 		$sql .= " AND rating = '$rating'";
 	}
 
-	$rating_count = $wpdb->get_var( $wpdb->prepare( $sql ) );
+	$rating_count = $wpdb->get_var( $wpdb->prepare( $sql, NULL ) );
 
 	return $rating_count;
 }

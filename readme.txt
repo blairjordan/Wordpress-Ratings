@@ -1,9 +1,9 @@
 === Rockhoist Ratings ===
 Contributors: esserq
 Tags: rating, thumbs, up, down, post, ajax
-Requires at least: 3.4
-Tested up to: 3.4.1
-Stable tag: 1.2
+Requires at least: 3.6
+Tested up to: 3.6.1
+Stable tag: 1.2.1
 
 Rockhoist Ratings is a thumbs up/ thumbs down style rating widget for posts.
 
