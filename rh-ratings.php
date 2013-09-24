@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Rockhoist Ratings
-Version: 1.2
+Version: 1.2.1
 Plugin URI: http://twitter.com/blairyeah
 Description: A YouTube style rating widget for posts. 
 Author: B. Jordan
@@ -31,7 +31,7 @@ http://www.gnu.org/licenses/gpl.txt
 require_once(ABSPATH .'wp-includes/pluggable.php'); 
 
 // Change Log
-$current_version = array('1.0');
+$current_version = array('1.2.1');
 
 // Database schema version
 global $rhr_db_version;
