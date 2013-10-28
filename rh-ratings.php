@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Rockhoist Ratings
-Version: 1.2.1
-Plugin URI: http://twitter.com/blairyeah
+Version: 1.2.2
+Plugin URI: https://github.com/slizice/Wordpress-Ratings
 Description: A YouTube style rating widget for posts. 
 Author: B. Jordan
-Author URI: http://www.twitter.com/blairyeah
+Author URI: http://www.github.com/slizice
 
 Copyright (c) 2009
 Released under the GPL license
@@ -108,9 +108,9 @@ function rhr_insert_rating( $args = '' ) {
 	global $wpdb;
 
 	$wpdb->insert( $wpdb->prefix . 'rh_ratings', 
-		array( 'user_id' => $args['user_ID'],
-			'post_id' => $args['post_ID'],
-			'rating' => $args['rating']), 
+		array( 'user_id' => mysql_real_escape_string($args['user_ID']),
+			'post_id' => mysql_real_escape_string($args['post_ID']),
+			'rating' => mysql_real_escape_string($args['rating'])), 
 		array( '%d', '%d', '%s' ) );
 }
 
@@ -118,7 +118,7 @@ function rhr_update_rating( $args = '' ) {
 
 	global $wpdb;
 	
-	$wpdb->query( $wpdb->prepare( 'UPDATE ' . $wpdb->prefix . 'rh_ratings' . ' SET rating = %s WHERE user_id = %d AND post_id = %d', $args['rating'], $args['user_ID'], $args['post_ID'] ) );
+	$wpdb->query( $wpdb->prepare( 'UPDATE ' . $wpdb->prefix . 'rh_ratings' . ' SET rating = %s WHERE user_id = %d AND post_id = %d', mysql_real_escape_string($args['rating']), mysql_real_escape_string($args['user_ID']), mysql_real_escape_string($args['post_ID']) ) );
 
 	$wpdb->show_errors();
 }
@@ -259,9 +259,9 @@ function rhr_ajax_submit() {
 	if (! wp_verify_nonce( $nonce, 'rating-nonce' ) ) die("You bad.");
 
 	// get the submitted parameters
-	$args = array( 'user_ID' => $current_user->ID,
-			'post_ID' => intval( $_POST['postID'] ),
-			'rating' => $_POST['rating'] );
+	$args = array(  'user_ID' => mysql_real_escape_string($current_user->ID),
+			'post_ID' => mysql_real_escape_string(intval( $_POST['postID'] )),
+			'rating' => mysql_real_escape_string($_POST['rating'] ));
 
 	// save the rating
 	rhr_set_rating( $args );

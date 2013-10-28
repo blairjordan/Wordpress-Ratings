@@ -3,7 +3,7 @@ Contributors: esserq
 Tags: rating, thumbs, up, down, post, ajax
 Requires at least: 3.6
 Tested up to: 3.6.1
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 
 Rockhoist Ratings is a thumbs up/ thumbs down style rating widget for posts.
 
@@ -30,6 +30,12 @@ Contact me if you find any bugs, issues or have a feature request and I will do 
 1. The rating widget with default styling.
 
 == Changelog ==
+
+= 1.2.2 =
+* Addressed SQL vulnerability.
+
+= 1.2.1 =
+* Fixed compatability issue with query prepare statement.
 
 = 1.2 =
 * Fixed compatibility issue with content filter.
