@@ -2,10 +2,10 @@
 /*
 Plugin Name: Rockhoist Ratings
 Version: 1.2.2
-Plugin URI: https://github.com/slizice/Wordpress-Ratings
+Plugin URI: https://github.com/blairjordan/Wordpress-Ratings
 Description: A YouTube style rating widget for posts. 
 Author: B. Jordan
-Author URI: http://www.github.com/slizice
+Author URI: http://www.github.com/blairjordan
 
 Copyright (c) 2009
 Released under the GPL license
@@ -31,7 +31,7 @@ http://www.gnu.org/licenses/gpl.txt
 require_once(ABSPATH .'wp-includes/pluggable.php'); 
 
 // Change Log
-$current_version = array('1.2.1');
+$current_version = array('1.2.2');
 
 // Database schema version
 global $rhr_db_version;
@@ -108,9 +108,9 @@ function rhr_insert_rating( $args = '' ) {
 	global $wpdb;
 
 	$wpdb->insert( $wpdb->prefix . 'rh_ratings', 
-		array( 'user_id' => mysql_real_escape_string($args['user_ID']),
-			'post_id' => mysql_real_escape_string($args['post_ID']),
-			'rating' => mysql_real_escape_string($args['rating'])), 
+		array( 'user_id' => $args['user_ID'],
+			'post_id' => $args['post_ID'],
+			'rating' => $args['rating'] ), 
 		array( '%d', '%d', '%s' ) );
 }
 
@@ -118,7 +118,7 @@ function rhr_update_rating( $args = '' ) {
 
 	global $wpdb;
 	
-	$wpdb->query( $wpdb->prepare( 'UPDATE ' . $wpdb->prefix . 'rh_ratings' . ' SET rating = %s WHERE user_id = %d AND post_id = %d', mysql_real_escape_string($args['rating']), mysql_real_escape_string($args['user_ID']), mysql_real_escape_string($args['post_ID']) ) );
+	$wpdb->query( $wpdb->prepare( 'UPDATE ' . $wpdb->prefix . 'rh_ratings' . ' SET rating = %s WHERE user_id = %d AND post_id = %d',$args['rating'],$args['user_ID'], $args['post_ID']));
 
 	$wpdb->show_errors();
 }
@@ -220,7 +220,7 @@ add_filter('the_content', 'rhr_the_rating');
 
 // Link to Rockhoist Ratings stylesheet and apply some custom styles
 function rhr_css() {
-	echo "\n".'<link rel="stylesheet" href="'. WP_PLUGIN_URL . '/rockhoist-ratings/ratings.css" type="text/css" media="screen" />'."\n";
+	echo "\n".'<link rel="stylesheet" href="'. WP_PLUGIN_URL . '/rockhoist-ratings/ratings.css?v=1" type="text/css" media="screen" />'."\n";
 }
 
 add_action('wp_print_styles', 'rhr_css'); // Rockhoist Ratings stylesheet 
@@ -249,6 +249,8 @@ add_action( 'wp_ajax_rhr-ajax-submit', 'rhr_ajax_submit' );
 function rhr_ajax_submit() {
 
 	global $current_user;
+	global $wpdb;
+
 	get_currentuserinfo();
 
 	if ( !is_user_logged_in() )
@@ -259,9 +261,9 @@ function rhr_ajax_submit() {
 	if (! wp_verify_nonce( $nonce, 'rating-nonce' ) ) die("You bad.");
 
 	// get the submitted parameters
-	$args = array(  'user_ID' => mysql_real_escape_string($current_user->ID),
-			'post_ID' => mysql_real_escape_string(intval( $_POST['postID'] )),
-			'rating' => mysql_real_escape_string($_POST['rating'] ));
+	$args = array(  'user_ID' => $wpdb->prepare($current_user->ID,'%d'),
+			'post_ID' => $wpdb->prepare($_POST['postID'],'%d'),
+			'rating'  => $wpdb->prepare($_POST['rating'],'%s') );
 
 	// save the rating
 	rhr_set_rating( $args );
